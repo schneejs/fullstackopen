@@ -18,15 +18,5 @@ end note
 client->server: HTTP GET https://example.com/data.json
 server->client: variable data of type list converted to json
 
-note over server:
-the server receives a HTTP POST
-request with some text
-the text will be appended to data variable
-end note
-
-client->server: HTTP POST https://example.com/api/v0/submit_note
-server->client: note object in json format
-
 note over client:
-client reloads the page
-end note
+the browser draws all notes

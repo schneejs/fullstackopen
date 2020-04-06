@@ -1,0 +1,28 @@
+client->server: HTTP GET https://example.com/notes
+server->client: HTML page
+
+note over client:
+client parses the page and
+requests a .css and a .js file.
+end note
+
+client->server: HTTP GET https://example.com/styles/notes.css
+server->client: .css file
+client->server: HTTP GET https://example.com/scripts/notes.js
+server->client: .js file
+
+note over client:
+notes.js requests data.json with the notes
+end note
+
+client->server: HTTP GET https://example.com/data.json
+server->client: variable data of type map converted to json
+
+note over server:
+the server receives a HTTP POST
+request with some text
+the text will be appended to data variable
+end note
+
+client->server: HTTP POST https://example.com/api/v0/submit_note
+server->client: note object in json format

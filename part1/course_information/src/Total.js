@@ -2,8 +2,8 @@ let React = require("react")
 
 const Total = (props) => {
 	let total = 0;
-	for (let a of props.course) {
-		total += a.exercises;
+	for (let part of props.parts) {
+		total += part.exercises;
 	}
 	return (
 		<div>

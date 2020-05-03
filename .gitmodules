@@ -1,0 +1,6 @@
+[submodule "part3/phonebook_frontend"]
+	path = part3/phonebook_frontend
+	url = https://github.com/ArcSineSoftware/phonebook_frontend
+[submodule "part3/phonebook"]
+	path = part3/phonebook
+	url = https://github.com/ArcSineSoftware/phonebook

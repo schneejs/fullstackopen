@@ -1,4 +1,4 @@
-const { groupBy, maxBy } = require("lodash");
+const { groupBy } = require("lodash");
 
 const dummy = () => {
     return 1;

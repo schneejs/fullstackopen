@@ -2,15 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { info, error } = require("./utils/logger");
 const { mongodb_uri } = require("./utils/config");
-
-const blogSchema = mongoose.Schema({
-    title: String,
-    author: String,
-    url: String,
-    likes: Number
-});
-
-const Blog = mongoose.model('Blog', blogSchema);
+const Blog = require("./models/blog");
 
 mongoose.connect(mongodb_uri, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => info("Connected to MongoDB"))
@@ -18,19 +10,23 @@ mongoose.connect(mongodb_uri, { useNewUrlParser: true, useUnifiedTopology: true 
 
 const router = express.Router();
 
-router.get("/", (_, response, next) => {
-    Blog
-        .find({})
-        .then(blogs => response.json(blogs).end())
-        .catch(error => next(error));
+router.get("/", async (_, response, next) => {
+    try {
+        const blogs = await Blog.find({});
+        response.json(blogs).end();
+    } catch (err) {
+        next(err);
+    }
 });
 
-router.post("/", (request, response, next) => {
-    const blog = new Blog(request.body);
-    blog
-        .save()
-        .then(() => response.status(201).end())
-        .catch(error => next(error));
+router.post("/", async (request, response, next) => {
+    try {
+        const blog = new Blog(request.body);
+        await blog.save();
+        response.status(201).end();
+    } catch (err) {
+        next(err);
+    }
 });
 
 router.use((error, _, response, next) => {

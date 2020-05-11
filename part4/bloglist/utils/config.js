@@ -7,7 +7,14 @@ try {
     info();
 }
 
-if (!("MONGODB_URI" in process.env)) {
+if (process.env.NODE_ENV === "test") {
+    if ("MONGODB_TEST_URI" in process.env) {
+        process.env.MONGODB_URI = process.env.MONGODB_TEST_URI;
+    } else {
+        error("Can't find MongoDB Test URI");
+        process.exit(2);
+    }
+} else if (!("MONGODB_URI" in process.env)) {
     error("Can't find MongoDB URI");
     process.exit(2);
 }

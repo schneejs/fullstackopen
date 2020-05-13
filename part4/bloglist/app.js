@@ -7,7 +7,7 @@ const Blog = require("./models/blog");
 mongoose.connect(mongodb_uri, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => info("Connected to MongoDB"))
     .catch(err => error("Error: ", err));
-
+mongoose.set("useCreateIndex", true);
 const router = express.Router();
 
 router.get("/", async (_, response, next) => {
@@ -21,16 +21,18 @@ router.get("/", async (_, response, next) => {
 
 router.post("/", async (request, response, next) => {
     try {
+        if (!("likes" in request.body))
+            request.body.likes = 0;
         const blog = new Blog(request.body);
-        await blog.save();
-        response.status(201).end();
+        const newBlog = await blog.save();
+        response.status(201).json(newBlog).end();
     } catch (err) {
         next(err);
     }
 });
 
 router.use((error, _, response, next) => {
-    if (error.name === "ValidatorError") {
+    if (error.name === "ValidatorError" || error.name === "ValidationError") {
         response.status(400).json({ error: "Validation error" }.end());
     } else
         response.status(500).status({ error: "Unknown error" }).end();

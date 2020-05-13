@@ -6,6 +6,10 @@ const blogSchema = mongoose.Schema({
     url: String,
     likes: Number
 });
+blogSchema.virtual("id").get(function() {
+    return this._id;
+});
+blogSchema.set("toJSON", { virtuals: true });
 
 const Blog = mongoose.model('Blog', blogSchema);
 

@@ -31,6 +31,25 @@ router.post("/", async (request, response, next) => {
     }
 });
 
+router.patch("/:id", async (request, response, next) => {
+    try {
+        const body = request.body;
+        const res = await Blog.findOneAndUpdate({ id: request.param.id }, body, { new: true });
+        response.status(200).json(res).end();
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.delete("/:id", async (request, response, next) => {
+    try {
+        Blog.findOneAndDelete({ id: request.params.id });
+        response.status(200).end();
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.use((error, _, response, next) => {
     if (error.name === "ValidatorError" || error.name === "ValidationError") {
         response.status(400).json({ error: "Validation error" }.end());

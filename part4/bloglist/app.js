@@ -8,6 +8,7 @@ mongoose.connect(mongodb_uri, { useNewUrlParser: true, useUnifiedTopology: true 
     .then(() => info("Connected to MongoDB"))
     .catch(err => error("Error: ", err));
 mongoose.set("useCreateIndex", true);
+mongoose.set("useFindAndModify", true);
 const router = express.Router();
 
 router.get("/", async (_, response, next) => {

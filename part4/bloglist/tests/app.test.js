@@ -2,6 +2,7 @@ const express = require("express");
 const supertest = require("supertest");
 const mainRouter = require("../app");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const app = express();
 app.use(express.json());
@@ -23,9 +24,18 @@ const initialBlogs = [
     }
 ]
 
+const initialUser = {
+    username: "john",
+    name: "John Smith",
+    password: "sekret"
+};
+
 beforeEach(async () => {
     await Blog.deleteMany({});
-    initialBlogs.forEach(blog => Blog(blog).save());
+    await User.deleteMany({});
+    const user = await User(initialUser);
+    user.save();
+    initialBlogs.forEach(blog => Blog({...blog, user: user}).save());
 });
 
 describe("read-only methods", () => {
@@ -95,5 +105,10 @@ describe("post methods work", () => {
         expect(response2.status).toEqual(200);
         const response3 = await api.get("/api/blogs");
         expect(response3.body).toHaveLength(2);
+    })
+
+    test("print blogs", async () => {
+        const response = await api.get("/api/blogs");
+        console.log(response.body)
     })
 });

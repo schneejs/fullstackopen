@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/", async (_, response, next) => {
     try {
-        const blogs = await Blog.find({});
+        const blogs = await Blog.find({}).populate("user");
         response.json(blogs).end();
     } catch (err) {
         next(err);

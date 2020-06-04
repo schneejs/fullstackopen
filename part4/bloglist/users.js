@@ -12,6 +12,15 @@ mongoose.set("useCreateIndex", true);
 mongoose.set("useFindAndModify", true);
 const usersRouter = express.Router();
 
+usersRouter.get("/", async (request, response, next) => {
+    try {
+        const res = await User.find({}).populate("notes");
+        response.json(res).end();
+    } catch (err) {
+        next(err);
+    }
+});
+
 usersRouter.post("/", async (request, response, next) => {
     const body = request.body;
     if (!body.password)
@@ -35,8 +44,10 @@ usersRouter.post("/", async (request, response, next) => {
 usersRouter.use((error, _, response, next) => {
     if (error.name === "ValidatorError" || error.name === "ValidationError") {
         response.status(400).json({ error: "Validation error" }).end();
-    } else
-        response.status(500).status({ error: "Unknown error" }).end();
+    } else {
+        console.error("Error:", error);
+        response.status(400).json({ error: "Unknown error" }).end();
+    }
 });
 
 usersRouter.use((_, response) => {

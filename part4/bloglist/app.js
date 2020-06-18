@@ -13,16 +13,19 @@ mongoose.set("useCreateIndex", true);
 mongoose.set("useFindAndModify", true);
 const router = express.Router();
 
-const identifyUser = request => {
+const identifyUser = async (request, _, next) => {
     const authHeader = request.get("authorization");
     if (!(authHeader && authHeader.toLowerCase().startsWith("bearer")))
-        return null
+        request.user = null
     const token = authHeader.substring(7);
     const decodedToken = jwt.verify(token, process.env.SECRET);
     if (!(token && decodedToken.id))
-        return null;
-    return await User.findById(decodedToken.id);
+        request.user = null;
+    request.user = await User.findById(decodedToken.id);
+    next();
 }
+
+router.use(identifyUser);
 
 router.get("/", async (_, response, next) => {
     try {
@@ -34,14 +37,13 @@ router.get("/", async (_, response, next) => {
 });
 
 router.post("/", async (request, response, next) => {
-    const user = identifyUser(request);
-    if (!user)
+    if (!request.user)
         return response.status(401).json({ detail: "Token missing or invalid" });
 
     try {
         if (!("likes" in request.body))
             request.body.likes = 0;
-        request.body.author = user.username;
+        request.body.author = request.user.username.toString();
         const blog = new Blog(request.body);
         const newBlog = await blog.save();
         response.status(201).json(newBlog).end();
@@ -51,8 +53,7 @@ router.post("/", async (request, response, next) => {
 });
 
 router.patch("/:id", async (request, response, next) => {
-    const user = identifyUser(request);
-    if (!user)
+    if (!request.user)
         return response.status(401).json({ detail: "Token missing or invalid" });
 
     try {
@@ -65,12 +66,17 @@ router.patch("/:id", async (request, response, next) => {
 });
 
 router.delete("/:id", async (request, response, next) => {
-    const user = identifyUser(request);
-    if (!user)
+    if (!request.user)
         return response.status(401).json({ detail: "Token missing or invalid" });
 
     try {
-        Blog.findOneAndDelete({ id: request.params.id });
+        const blog = await Blog.findById(request.params.id);
+        if (blog.user.toString() !== request.user.id.toString())
+            return response
+                .status(401)
+                .json({ detail: "Deleting another user's blogs is forbidden" })
+                .end();
+        await Blog.findOneAndDelete({ id: request.params.id });
         response.status(200).end();
     } catch (err) {
         next(err);

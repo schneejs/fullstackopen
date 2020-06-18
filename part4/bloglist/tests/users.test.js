@@ -53,7 +53,7 @@ describe("check are correct", () => {
                 password: "123"
             }));
         expect(response.status).toEqual(400);
-        expect(response.body.error).toBeDefined();
+        expect(response.body.detail).toBeDefined();
     });
 
     test("short password", async () => {
@@ -66,6 +66,6 @@ describe("check are correct", () => {
                 password: "12"
             }));
         expect(response.status).toEqual(400);
-        expect(response.body.error).toBeDefined();
+        expect(response.body.detail).toBeDefined();
     });
 })

@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const { info, error } = require("./utils/logger");
-const { mongodb_uri } = require("./utils/config");
+const { mongodb_uri, secret } = require("./utils/config");
 const Blog = require("./models/blog");
 const User = require("./models/user");
 
@@ -17,11 +17,14 @@ const identifyUser = async (request, _, next) => {
     const authHeader = request.get("authorization");
     if (!(authHeader && authHeader.toLowerCase().startsWith("bearer")))
         request.user = null
-    const token = authHeader.substring(7);
-    const decodedToken = jwt.verify(token, process.env.SECRET);
-    if (!(token && decodedToken.id))
-        request.user = null;
-    request.user = await User.findById(decodedToken.id);
+    else {
+        const token = authHeader.substring(7);
+        const decodedToken = jwt.verify(token, secret);
+        if (token && decodedToken.username)
+            request.user = await User.findOne({ username: decodedToken.username });
+        else
+            request.user = null;
+    }
     next();
 }
 
@@ -43,7 +46,7 @@ router.post("/", async (request, response, next) => {
     try {
         if (!("likes" in request.body))
             request.body.likes = 0;
-        request.body.author = request.user.username.toString();
+        request.body.user = request.user.id.toString();
         const blog = new Blog(request.body);
         const newBlog = await blog.save();
         response.status(201).json(newBlog).end();

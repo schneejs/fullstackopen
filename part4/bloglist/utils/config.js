@@ -19,7 +19,13 @@ if (process.env.NODE_ENV === "test") {
     process.exit(2);
 }
 
+if (!process.env.SECRET) {
+    error("Can't find SECRET key");
+    process.exit(2);
+}
+
 module.exports = {
     mongodb_uri: process.env.MONGODB_URI,
-    port: process.env.PORT || 80
+    port: process.env.PORT || 80,
+    secret: process.env.SECRET
 };

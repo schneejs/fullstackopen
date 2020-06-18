@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
@@ -8,13 +8,13 @@ const userSchema = mongoose.Schema({
         minlength: 3
     },
     name: String,
-    passwordHash: { type: String },
-    // blogs: [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: "Blog"
-    //     }
-    // ]
+    passwordHash: String,
+    blogs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Blog"
+        }
+    ]
 });
 
 userSchema.set("toJSON", {
@@ -26,6 +26,6 @@ userSchema.set("toJSON", {
     }
 });
 
-const User = mongoose.model("User", userSchema);
+const User = new mongoose.model("User", userSchema);
 
 module.exports = User;

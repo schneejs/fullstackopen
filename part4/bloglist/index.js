@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors")
 const morgan = require("morgan");
 const mainRouter = require("./app");
 const usersRouter = require("./users");
@@ -7,6 +8,7 @@ const { info } = require("./utils/logger");
 const { port } = require("./utils/config");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(morgan("short"));
 app.use("/api/blogs", mainRouter);

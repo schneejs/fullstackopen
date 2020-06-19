@@ -15,6 +15,9 @@ const Login = props => {
                     alert("Unknown error")
                 }
                 props.setIsLoading(false)
+
+                // Save the user's object
+                window.localStorage.setItem("user", JSON.stringify(response.data))
             })
     }
 

@@ -15,14 +15,20 @@ const App = () => {
   const isAuthorized = user !== null;
 
   const logOut = () => {
-    setUser(null);
+    setUser(null)
+    window.localStorage.removeItem("user")
     setIsLoading(false)
   }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
+
+    const savedUserRaw = window.localStorage.getItem("user")
+    if (savedUserRaw) {
+      setUser(JSON.parse(savedUserRaw))
+    }
   }, [])
 
   let pageContent;

@@ -1,8 +1,7 @@
-import axios from 'axios'
-const baseUrl = 'http://localhost:3001/api/login'
+import baseInstance from './baseInstance'
 
 const performLogin = (username, password) => {
-    return axios.post(baseUrl, {username, password})
+    return baseInstance().post("/api/login", { username, password })
 }
 
 export default performLogin

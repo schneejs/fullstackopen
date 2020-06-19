@@ -1,8 +1,7 @@
-import axios from 'axios'
-const baseUrl = 'http://localhost:3001/api/blogs'
+import baseInstance from './baseInstance'
 
 const getAll = () => {
-  const request = axios.get(baseUrl)
+  const request = baseInstance().get("/api/blogs")
   return request.then(response => response.data)
 }
 

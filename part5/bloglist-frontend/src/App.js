@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Panel from './components/Panel'
 import Login from './components/Login'
+import Home from './components/Home'
 
 const App = () => {
   const [page, setPage] = useState("home")
@@ -34,19 +35,12 @@ const App = () => {
   let pageContent;
   switch (page) {
   case "home":
-    pageContent = (
-      <div>
-        <h2>blogs</h2>
-        {
-          isAuthorized
-            ? <p>Your nickname is {user.username}</p>
-            : null
-        }
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
-      </div>
-    )
+    pageContent = <Home
+      isAuthorized={isAuthorized}
+      user={user}
+      blogs={blogs}
+      setBlogs={setBlogs}
+    />
     break
   case "login":
     pageContent = <Login

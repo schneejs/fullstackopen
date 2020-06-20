@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Panel from './components/Panel'
 import Login from './components/Login'
@@ -11,6 +10,7 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState(null);
   const [blogs, setBlogs] = useState([])
 
   const isAuthorized = user !== null;
@@ -19,6 +19,11 @@ const App = () => {
     setUser(null)
     window.localStorage.removeItem("user")
     setIsLoading(false)
+  }
+
+  const notify = (isSuccessful, message) => {
+    setNotification({isSuccessful, message})
+    setTimeout(() => setNotification(null), 3500)
   }
 
   useEffect(() => {
@@ -40,6 +45,7 @@ const App = () => {
       user={user}
       blogs={blogs}
       setBlogs={setBlogs}
+      notify={notify}
     />
     break
   case "login":
@@ -51,6 +57,7 @@ const App = () => {
       setIsLoading={setIsLoading}
       setUser={setUser}
       setPage={setPage}
+      notify={notify}
     />
     break
   default:
@@ -68,6 +75,7 @@ const App = () => {
         isAuthorized={isAuthorized}
         logOut={logOut}
         isLoading={isLoading}
+        notification={notification}
       />
       {pageContent}
     </div>

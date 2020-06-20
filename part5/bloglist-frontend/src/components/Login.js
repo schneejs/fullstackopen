@@ -9,15 +9,15 @@ const Login = props => {
                 if (response.status === 200) {
                     props.setUser(response.data)
                     props.setPage("home")
+                    // Save the user's object
+                    window.localStorage.setItem("user", JSON.stringify(response.data))
+                    props.notify(true, "Successfully logged in")
                 } else if (response.status === 401) {
-                    alert("Incorrect username or password")
+                    props.notify(false, "Incorrect username or password")
                 } else {
-                    alert("Unknown error")
+                    props.notify(false, "Unknown error")
                 }
                 props.setIsLoading(false)
-
-                // Save the user's object
-                window.localStorage.setItem("user", JSON.stringify(response.data))
             })
     }
 

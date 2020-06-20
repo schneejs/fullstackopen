@@ -13,7 +13,7 @@ const Home = props => {
         createBlog(props.user, title, author, url)
             .then(response => {
                 if (response.status !== 201)
-                    alert("Error while uploading the blog")
+                    props.notify(false, "Error while uploading the blog")
                 setTitle("")
                 setAuthor("")
                 setUrl("")
@@ -21,6 +21,8 @@ const Home = props => {
                 blogService.getAll().then(blogs =>
                     props.setBlogs(blogs)
                 )
+
+                props.notify(true, "Blog successfully added")
             })
     }
 

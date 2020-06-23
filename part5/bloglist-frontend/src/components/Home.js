@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import Blog from '../components/Blog'
+import Togglable from '../components/Togglable'
 import createBlog from '../services/createBlog'
 import blogService from '../services/blogs'
 
-const Home = props => {
+const CreateBlogForm = props => {
     const [title, setTitle] = useState("")
     const [author, setAuthor] = useState("")
     const [url, setUrl] = useState("")
+
+    const [isCreateBlogOpen, setIsCreateBlogOpen] = useState(false)
+    const toggleIsCreateBlogOpen = () => setIsCreateBlogOpen(!isCreateBlogOpen)
 
     const handleCreateBlogButton = event => {
         event.preventDefault()
@@ -17,6 +21,7 @@ const Home = props => {
                 setTitle("")
                 setAuthor("")
                 setUrl("")
+                setIsCreateBlogOpen(false)
 
                 blogService.getAll().then(blogs =>
                     props.setBlogs(blogs)
@@ -27,16 +32,7 @@ const Home = props => {
     }
 
     return (
-        <div>
-            <h2>blogs</h2>
-            {
-            props.isAuthorized
-                ? <p>Your nickname is {props.user.username}</p>
-                : null
-            }
-            {props.blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-            )}
+        <Togglable name="Create blog" isOpen={isCreateBlogOpen} toggle={toggleIsCreateBlogOpen}>
             <h2>create</h2>
             <label>
                 title:
@@ -54,8 +50,24 @@ const Home = props => {
             </label>
             <br />
             <button onClick={handleCreateBlogButton}>Create blog</button>
-        </div>
+            <button onClick={() => setIsCreateBlogOpen(false)}>Cancel</button>
+        </Togglable>
     )
 }
+
+const Home = props => (
+    <div>
+        <h2>blogs</h2>
+        {
+        props.isAuthorized
+            ? <p>Your nickname is {props.user.username}</p>
+            : null
+        }
+        {props.blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} />
+        )}
+        <CreateBlogForm />
+    </div>
+)
 
 export default Home

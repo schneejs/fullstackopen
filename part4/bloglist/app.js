@@ -79,7 +79,7 @@ router.delete("/:id", async (request, response, next) => {
                 .status(401)
                 .json({ detail: "Deleting another user's blogs is forbidden" })
                 .end();
-        await Blog.findOneAndDelete({ id: request.params.id });
+        await Blog.findByIdAndDelete(request.params.id);
         response.status(200).end();
     } catch (err) {
         next(err);

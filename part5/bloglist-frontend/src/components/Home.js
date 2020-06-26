@@ -64,7 +64,7 @@ const Home = props => (
             : null
         }
         {props.blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={props.user} />
+        <Blog key={blog.id} blog={blog} user={props.user} setBlogs={props.setBlogs} />
         )}
         <CreateBlogForm
             user={props.user}

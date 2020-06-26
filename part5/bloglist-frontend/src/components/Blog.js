@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import Togglable from './Togglable'
 import likeBlog from '../services/likeBlog'
+import deleteBlog from '../services/deleteBlog'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, user, setBlogs }) => {
   const blogStyle = {
     paddingLeft: 3,
     border: "solid",
@@ -19,6 +21,16 @@ const Blog = ({ blog, user }) => {
     setLiked(true)
   }
 
+  const delete_ = async () => {
+    if (!window.confirm(`Do you really want to delete ${blog.title}?`))
+      return
+    await deleteBlog(user, blog)
+    const blogs = await blogService.getAll()
+    setBlogs(blogs)
+  }
+
+  console.log({blog, user})
+
   return (
     <div style={blogStyle}>
       {blog.title}
@@ -26,7 +38,14 @@ const Blog = ({ blog, user }) => {
         <p><a href={blog.url}>Website</a></p>
         <p>Author: {blog.author}</p>
         <p>Likes: {blog.likes + Number(liked)} <button type="button" onClick={like}>Like</button></p>
-        <button type="button" onClick={() => setIsOpen(false)}>Close</button>
+        <p>
+          {
+            blog.user.id === user.id
+              ? <button type="button" onClick={delete_}>Delete</button>
+              : null
+          }
+          <button type="button" onClick={() => setIsOpen(false)}>Close</button>
+        </p>
       </Togglable>
     </div>
   )

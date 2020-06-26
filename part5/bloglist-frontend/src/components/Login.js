@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import performLogin from '../services/login'
 
 const Login = props => {
@@ -35,6 +36,17 @@ const Login = props => {
             <button onClick={handleLoginButton}>Log in</button>
         </div>
     )
+}
+
+Login.propTypes = {
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
+    setUsername: PropTypes.func.isRequired,
+    setPassword: PropTypes.func.isRequired,
+    setIsLoading: PropTypes.func.isRequired,
+    notify: PropTypes.func.isRequired,
+    setUser: PropTypes.func.isRequired,
+    setPage: PropTypes.func.isRequired
 }
 
 export default Login

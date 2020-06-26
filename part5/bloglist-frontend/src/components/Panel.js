@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Panel = props => (
     <div>
@@ -16,5 +17,13 @@ const Panel = props => (
         }
     </div>
 )
+
+Panel.propTypes = {
+    isAuthorized: PropTypes.bool.isRequired,
+    createPanelButtonHandler: PropTypes.func.isRequired,
+    logOut: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    notification: PropTypes.object
+}
 
 export default Panel

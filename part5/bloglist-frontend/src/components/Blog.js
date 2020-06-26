@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import Togglable from './Togglable'
 import likeBlog from '../services/likeBlog'
 import deleteBlog from '../services/deleteBlog'
@@ -47,6 +48,12 @@ const Blog = ({ blog, user, setBlogs }) => {
       </Togglable>
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  setBlogs: PropTypes.func.isRequired
 }
 
 export default Blog

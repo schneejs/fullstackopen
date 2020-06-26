@@ -14,7 +14,8 @@ const Togglable = props => (
 Togglable.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
+    children: PropTypes.array.isRequired
 }
 
 export default Togglable

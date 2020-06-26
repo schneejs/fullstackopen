@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import Blog from '../components/Blog'
 import Togglable from '../components/Togglable'
 import createBlog from '../services/createBlog'
@@ -55,6 +56,12 @@ const CreateBlogForm = props => {
     )
 }
 
+CreateBlogForm.propTypes = {
+    user: PropTypes.object,
+    notify: PropTypes.func.isRequired,
+    setBlogs: PropTypes.func.isRequired
+}
+
 const Home = props => (
     <div>
         <h2>blogs</h2>
@@ -73,5 +80,13 @@ const Home = props => (
         />
     </div>
 )
+
+Home.propTypes = {
+    isAuthorized: PropTypes.bool.isRequired,
+    blogs: PropTypes.array.isRequired,
+    user: PropTypes.object,
+    notify: PropTypes.func.isRequired,
+    setBlogs: PropTypes.func.isRequired
+}
 
 export default Home

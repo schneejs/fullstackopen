@@ -29,8 +29,6 @@ const Blog = ({ blog, user, setBlogs }) => {
     setBlogs(blogs)
   }
 
-  console.log({blog, user})
-
   return (
     <div style={blogStyle}>
       {blog.title}

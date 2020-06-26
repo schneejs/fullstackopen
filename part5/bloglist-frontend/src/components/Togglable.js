@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const Togglable = props => (
     <div>
@@ -9,5 +10,11 @@ const Togglable = props => (
         }
     </div>
 )
+
+Togglable.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    toggle: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired
+}
 
 export default Togglable

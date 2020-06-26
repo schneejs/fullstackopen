@@ -61,7 +61,7 @@ router.patch("/:id", async (request, response, next) => {
 
     try {
         const body = request.body;
-        const res = await Blog.findOneAndUpdate({ id: request.param.id }, body, { new: true });
+        const res = await Blog.findByIdAndUpdate(request.params.id, body, { new: true });
         response.status(200).json(res).end();
     } catch (err) {
         next(err);

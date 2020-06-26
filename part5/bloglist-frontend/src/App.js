@@ -27,9 +27,15 @@ const App = () => {
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService.getAll().then(blogs => {
+      blogs.sort((first_blog, second_blog) => {
+        if (first_blog.likes === second_blog.likes)
+          return 0
+        else
+          return first_blog.likes < second_blog.likes
+      })
+      setBlogs(blogs)
+    })
 
     const savedUserRaw = window.localStorage.getItem("user")
     if (savedUserRaw) {

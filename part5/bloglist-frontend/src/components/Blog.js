@@ -5,7 +5,12 @@ import likeBlog from '../services/likeBlog'
 import deleteBlog from '../services/deleteBlog'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, user, setBlogs }) => {
+const Blog = props => {
+  const blog = props.blog
+  const user = props.user
+  const setBlogs = props.setBlogs
+  const likeCallback = props.likeCallback
+
   const blogStyle = {
     paddingLeft: 3,
     border: "solid",
@@ -20,6 +25,8 @@ const Blog = ({ blog, user, setBlogs }) => {
   const like = () => {
     likeBlog(user, blog)
     setLiked(true)
+    if (likeCallback)
+      likeCallback()
   }
 
   const delete_ = async () => {

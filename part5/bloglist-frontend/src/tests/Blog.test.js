@@ -53,4 +53,35 @@ describe('blog component', () => {
         expect(div).toHaveTextContent("Name")
         expect(div).toHaveTextContent("42")
     })
+
+    test('clicking like twice works properly', () => {
+        const user = {
+            id: 43
+        }
+
+        const blog = {
+            title: "11 title",
+            url: "url.com",
+            author: "Name",
+            likes: 42,
+            user
+        }
+
+        const mockHandler = jest.fn()
+
+        const component = render(
+            <Blog
+                blog={blog} user={user} setBlogs={() => undefined}
+                likeCallback={mockHandler}
+            />
+        )
+
+        fireEvent.click(component.getByText("Open"))
+
+        const button = component.getByText("Like")
+        fireEvent.click(button)
+        fireEvent.click(button)
+
+        expect(mockHandler.mock.calls).toHaveLength(2)
+    })
 })

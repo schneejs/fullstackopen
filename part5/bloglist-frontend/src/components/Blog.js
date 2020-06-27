@@ -31,7 +31,7 @@ const Blog = ({ blog, user, setBlogs }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       {blog.title}
       <Togglable isOpen={isOpen} toggle={toggle} name="Open">
         <p><a href={blog.url}>Website</a></p>

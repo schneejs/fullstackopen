@@ -5,12 +5,7 @@ import likeBlog from '../services/likeBlog'
 import deleteBlog from '../services/deleteBlog'
 import blogService from '../services/blogs'
 
-const Blog = props => {
-  const blog = props.blog
-  const user = props.user
-  const setBlogs = props.setBlogs
-  const likeCallback = props.likeCallback
-
+const Blog = ({ blog, user, setBlogs, likeCallback }) => {
   const blogStyle = {
     paddingLeft: 3,
     border: "solid",
@@ -60,7 +55,8 @@ const Blog = props => {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
-  setBlogs: PropTypes.func.isRequired
+  setBlogs: PropTypes.func.isRequired,
+  likeCallback: PropTypes.func
 }
 
 export default Blog

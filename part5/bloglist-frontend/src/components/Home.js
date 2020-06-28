@@ -30,6 +30,8 @@ const CreateBlogForm = props => {
 
                 props.notify(true, "Blog successfully added")
             })
+        if (props.createBlogCallback)
+            props.createBlogCallback(title, author, url)
     }
 
     return (
@@ -37,17 +39,17 @@ const CreateBlogForm = props => {
             <h2>create</h2>
             <label>
                 title:
-                <input value={title} onChange={event => setTitle(event.target.value)}></input>
+                <input className="titleinput" value={title} onChange={event => setTitle(event.target.value)}></input>
             </label>
             <br />
             <label>
                 author:
-                <input value={author} onChange={event => setAuthor(event.target.value)}></input>
+                <input className="authorinput" value={author} onChange={event => setAuthor(event.target.value)}></input>
             </label>
             <br />
             <label>
                 url:
-                <input value={url} onChange={event => setUrl(event.target.value)}></input>
+                <input className="urlinput" value={url} onChange={event => setUrl(event.target.value)}></input>
             </label>
             <br />
             <button onClick={handleCreateBlogButton}>Create blog</button>
@@ -59,7 +61,8 @@ const CreateBlogForm = props => {
 CreateBlogForm.propTypes = {
     user: PropTypes.object,
     notify: PropTypes.func.isRequired,
-    setBlogs: PropTypes.func.isRequired
+    setBlogs: PropTypes.func.isRequired,
+    createBlogCallback: PropTypes.func
 }
 
 const Home = props => (
@@ -77,6 +80,7 @@ const Home = props => (
             user={props.user}
             notify={props.notify}
             setBlogs={props.setBlogs}
+            createBlogCallback={props.createBlogCallback}
         />
     </div>
 )
@@ -86,7 +90,8 @@ Home.propTypes = {
     blogs: PropTypes.array.isRequired,
     user: PropTypes.object,
     notify: PropTypes.func.isRequired,
-    setBlogs: PropTypes.func.isRequired
+    setBlogs: PropTypes.func.isRequired,
+    createBlogCallback: PropTypes.func
 }
 
 export default Home

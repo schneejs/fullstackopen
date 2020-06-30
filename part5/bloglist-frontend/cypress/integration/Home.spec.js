@@ -1,4 +1,4 @@
-describe('Main page', () => {
+describe('Working with login', () => {
     beforeEach(() => {
         cy.request('POST', 'http://localhost:3001/api/testing/reset')
         cy.request('POST', 'http://localhost:3001/api/testing/adduser', {
@@ -44,12 +44,24 @@ describe('Main page', () => {
         cy.get('.notification').should('contain', 'uccessfully')
         cy.contains('Log out').should('exist')
     })
+})
 
-    it('Creating blogs words', () => {
+describe('Working with blogs', () => {
+    beforeEach(() => {
+        cy.request('POST', 'http://localhost:3001/api/testing/reset')
+        cy.request('POST', 'http://localhost:3001/api/testing/adduser', {
+            username: "maria",
+            password: "sekret"
+        })
+        cy.visit('http://localhost:3000')
+
+        // All tests will be performed while logged in
         cy.get('input.username').type('maria')
         cy.get('input.password').type('sekret')
         cy.get('button.loginbutton').click()
+    })
 
+    it('Creating blogs works', () => {
         cy.contains('Create blog').click()
         cy.get('input.titleinput').type('Engineering airplanes')
         cy.get('input.authorinput').type('Maria')
@@ -58,5 +70,18 @@ describe('Main page', () => {
 
         cy.contains('Engineering airplanes').should('exist')
         cy.contains('Open').should('exist')
+    })
+
+    it('Liking blogs works', () => {
+        cy.contains('Create blog').click()
+        cy.get('input.titleinput').type('Engineering airplanes')
+        cy.get('input.authorinput').type('Maria')
+        cy.get('input.urlinput').type('http://example.com')
+        cy.get('button.createblog').click()
+
+        cy.contains('Open').click()
+        cy.contains('Likes: 0').should('exist')
+        cy.contains('Like').click()
+        cy.contains('Likes: 1').should('exist')
     })
 })

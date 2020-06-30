@@ -16,6 +16,8 @@ const App = () => {
   const isAuthorized = user !== null;
 
   const logOut = () => {
+    setUsername("")
+    setPassword("")
     setUser(null)
     window.localStorage.removeItem("user")
     setIsLoading(false)

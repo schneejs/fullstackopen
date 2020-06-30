@@ -84,4 +84,39 @@ describe('Working with blogs', () => {
         cy.contains('Like').click()
         cy.contains('Likes: 1').should('exist')
     })
+
+    it('Deleting blogs works', () => {
+        cy.contains('Create blog').click()
+        cy.get('input.titleinput').type('Engineering airplanes')
+        cy.get('input.authorinput').type('Maria')
+        cy.get('input.urlinput').type('http://example.com')
+        cy.get('button.createblog').click()
+
+        cy.contains('Open').click()
+        cy.contains('Delete').click()
+        cy.contains('Engineering airplanes').should('not.exist')
+    })
+
+    it('Other users cannot delete my blog', () => {
+        cy.request('POST', 'http://localhost:3001/api/testing/adduser', {
+            username: "john",
+            password: "sekret"
+        })
+
+        cy.contains('Create blog').click()
+        cy.get('input.titleinput').type('Engineering airplanes')
+        cy.get('input.authorinput').type('Maria')
+        cy.get('input.urlinput').type('http://example.com')
+        cy.get('button.createblog').click()
+        cy.get('.notification').should('contain', 'added')
+
+        cy.contains('Log out').click()
+        cy.contains('Log in').click()
+        cy.get('input.username').type('john')
+        cy.get('input.password').type('sekret')
+        cy.get('button.loginbutton').click()
+
+        cy.contains('Open').click()
+        cy.contains('Delete').should('not.exist')
+    })
 })

@@ -26,14 +26,14 @@ const Login = props => {
         <div>
             <label>
                 Username
-                <input value={props.username} onChange={event => props.setUsername(event.target.value)}></input>
+                <input className="username" value={props.username} onChange={event => props.setUsername(event.target.value)}></input>
             </label>
             <br />
             <label>
                 Password
-                <input type="password" value={props.password} onChange={event => props.setPassword(event.target.value)}></input>
+                <input className="password" type="password" value={props.password} onChange={event => props.setPassword(event.target.value)}></input>
             </label>
-            <button onClick={handleLoginButton}>Log in</button>
+            <button className="loginbutton" onClick={handleLoginButton}>Log in</button>
         </div>
     )
 }

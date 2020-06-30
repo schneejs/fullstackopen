@@ -40,6 +40,9 @@ const App = () => {
     const savedUserRaw = window.localStorage.getItem("user")
     if (savedUserRaw) {
       setUser(JSON.parse(savedUserRaw))
+    } else {
+      // Switch to login form if not authorized
+      setPage("login")
     }
   }, [])
 

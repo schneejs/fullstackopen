@@ -27,5 +27,6 @@ if (!process.env.SECRET) {
 module.exports = {
     mongodb_uri: process.env.MONGODB_URI,
     port: process.env.PORT || 80,
-    secret: process.env.SECRET
+    secret: process.env.SECRET,
+    mode: process.env.NODE_ENV || "development"
 };

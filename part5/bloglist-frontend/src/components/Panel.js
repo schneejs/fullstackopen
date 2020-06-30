@@ -12,7 +12,7 @@ const Panel = props => (
         {props.isLoading ? <span>Loading...</span> : null}
         {
             props.notification !== null
-                ? <p style={{color: props.notification.isSuccessful ? "green" : "red"}}>{props.notification.message}</p>
+                ? <p className="notification" style={{color: props.notification.isSuccessful ? "green" : "red"}}>{props.notification.message}</p>
                 : null
         }
     </div>

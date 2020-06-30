@@ -5,15 +5,24 @@ import performLogin from '../services/login'
 const Login = props => {
     const handleLoginButton = () => {
         props.setIsLoading(true)
+
+        if (!(props.username && props.password)) {
+            props.notify(false, "Both username and password are required")
+            props.setIsLoading(false)
+            return
+        }
+
         performLogin(props.username, props.password)
             .then(response => {
-                if (response.status === 200) {
-                    props.setUser(response.data)
-                    props.setPage("home")
-                    // Save the user's object
-                    window.localStorage.setItem("user", JSON.stringify(response.data))
-                    props.notify(true, "Successfully logged in")
-                } else if (response.status === 401) {
+                props.setUser(response.data)
+                props.setPage("home")
+                // Save the user's object
+                window.localStorage.setItem("user", JSON.stringify(response.data))
+                props.notify(true, "Successfully logged in")
+                props.setIsLoading(false)
+            })
+            .catch(error => {
+                if (error.response.status === 401) {
                     props.notify(false, "Incorrect username or password")
                 } else {
                     props.notify(false, "Unknown error")

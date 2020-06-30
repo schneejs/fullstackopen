@@ -44,4 +44,19 @@ describe('Main page', () => {
         cy.get('.notification').should('contain', 'uccessfully')
         cy.contains('Log out').should('exist')
     })
+
+    it('Creating blogs words', () => {
+        cy.get('input.username').type('maria')
+        cy.get('input.password').type('sekret')
+        cy.get('button.loginbutton').click()
+
+        cy.contains('Create blog').click()
+        cy.get('input.titleinput').type('Engineering airplanes')
+        cy.get('input.authorinput').type('Maria')
+        cy.get('input.urlinput').type('http://example.com')
+        cy.get('button.createblog').click()
+
+        cy.contains('Engineering airplanes').should('exist')
+        cy.contains('Open').should('exist')
+    })
 })

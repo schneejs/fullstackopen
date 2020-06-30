@@ -52,8 +52,8 @@ const CreateBlogForm = props => {
                 <input className="urlinput" value={url} onChange={event => setUrl(event.target.value)}></input>
             </label>
             <br />
-            <button onClick={handleCreateBlogButton}>Create blog</button>
-            <button onClick={() => setIsCreateBlogOpen(false)}>Cancel</button>
+            <button className="createblog" onClick={handleCreateBlogButton}>Create blog</button>
+            <button className="createblogcancel" onClick={() => setIsCreateBlogOpen(false)}>Cancel</button>
         </Togglable>
     )
 }

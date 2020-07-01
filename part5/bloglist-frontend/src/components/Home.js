@@ -73,9 +73,11 @@ const Home = props => (
             ? <p>Your nickname is {props.user.username}</p>
             : null
         }
-        {props.blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={props.user} setBlogs={props.setBlogs} />
-        )}
+        <div id="blogs">
+            {props.blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} user={props.user} setBlogs={props.setBlogs} />
+            )}
+        </div>
         <CreateBlogForm
             user={props.user}
             notify={props.notify}

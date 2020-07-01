@@ -119,4 +119,29 @@ describe('Working with blogs', () => {
         cy.contains('Open').click()
         cy.contains('Delete').should('not.exist')
     })
+
+    it('Blogs are ordered', () => {
+        cy.request('POST', 'http://localhost:3001/api/testing/addblog', {
+            title: 'Blog A',
+            author: 'Maria',
+            url: 'example.com',
+            likes: 1
+        })
+        cy.request('POST', 'http://localhost:3001/api/testing/addblog', {
+            title: 'Blog B',
+            author: 'Maria',
+            url: 'example.com',
+            likes: 2
+        })
+
+        cy.visit('http://localhost:3000')
+
+        const names = [ 'Blog B', 'Blog A' ]
+
+        cy.get('#blogs > div.blog').should($divs => {
+            expect($divs).to.have.length(names.length)
+            expect($divs.eq(0)).to.contain(names[0])
+            expect($divs.eq(1)).to.contain(names[1])
+        })
+    })
 })

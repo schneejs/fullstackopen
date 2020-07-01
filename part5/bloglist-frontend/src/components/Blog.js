@@ -41,7 +41,7 @@ const Blog = ({ blog, user, setBlogs, likeCallback }) => {
         <p>Likes: {blog.likes + Number(liked)} <button type="button" onClick={like}>Like</button></p>
         <p>
           {
-            user !== null && blog.user.id === user.id
+            user !== null && blog.user !== null && blog.user.id === user.id
               ? <button type="button" onClick={delete_}>Delete</button>
               : null
           }

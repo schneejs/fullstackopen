@@ -23,10 +23,14 @@ const reducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
 
+  const newState = [ ...state ]
+
   switch (action.type) {
   case 'INCREMENT_VOTES':
-    const newState = [ ...state ]
     newState.filter(anecdote => anecdote.id === action.data.id)[0].votes++
+    return newState
+  case 'ADD_ANECDOTE':
+    newState.push(asObject(action.data.text))
     return newState
   default:
     return state

@@ -1,6 +1,30 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
+const AnecdoteForm = () => {
+  const dispatch = useDispatch()
+
+  const addAnecdote = event => {
+    event.preventDefault()
+    const content = event.target.anecdoteText.value
+    dispatch({
+      type: 'ADD_ANECDOTE',
+      data: { text: content }
+    })
+    event.target.anecdoteText.value = ''
+  }
+
+  return (
+    <div>
+      <h2>create new</h2>
+      <form onSubmit={addAnecdote}>
+        <div><input name='anecdoteText' /></div>
+        <button type='submit'>create</button>
+      </form>
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = useSelector(state => state)
   const dispatch = useDispatch()
@@ -14,17 +38,7 @@ const App = () => {
     })
   }
 
-  const addAnecdote = event => {
-    event.preventDefault()
-    const content = event.target.anecdoteText.value
-    dispatch({
-      type: 'ADD_ANECDOTE',
-      data: { text: content }
-    })
-    event.target.anecdoteText.value = ''
-  }
-
-  const processedAnecdotes = [ ...anecdotes ]
+  const processedAnecdotes = [...anecdotes]
   processedAnecdotes.sort(
     (first, second) => first.votes < second.votes
   )
@@ -43,11 +57,7 @@ const App = () => {
           </div>
         </div>
       )}
-      <h2>create new</h2>
-      <form onSubmit={addAnecdote}>
-        <div><input name='anecdoteText' /></div>
-        <button type='submit'>create</button>
-      </form>
+      <AnecdoteForm />
     </div>
   )
 }

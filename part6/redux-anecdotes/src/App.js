@@ -24,10 +24,15 @@ const App = () => {
     event.target.anecdoteText.value = ''
   }
 
+  const processedAnecdotes = [ ...anecdotes ]
+  processedAnecdotes.sort(
+    (first, second) => first.votes < second.votes
+  )
+
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map(anecdote =>
+      {processedAnecdotes.map(anecdote =>
         <div key={anecdote.id}>
           <div>
             {anecdote.content}

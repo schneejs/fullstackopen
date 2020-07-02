@@ -1,31 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-const AnecdoteForm = () => {
-  const dispatch = useDispatch()
-
-  const addAnecdote = event => {
-    event.preventDefault()
-    const content = event.target.anecdoteText.value
-    dispatch({
-      type: 'ADD_ANECDOTE',
-      data: { text: content }
-    })
-    event.target.anecdoteText.value = ''
-  }
-
-  return (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={addAnecdote}>
-        <div><input name='anecdoteText' /></div>
-        <button type='submit'>create</button>
-      </form>
-    </div>
-  )
-}
-
-const App = () => {
+const AnecdoteList = () => {
   const anecdotes = useSelector(state => state)
   const dispatch = useDispatch()
 
@@ -57,6 +33,38 @@ const App = () => {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+const AnecdoteForm = () => {
+  const dispatch = useDispatch()
+
+  const addAnecdote = event => {
+    event.preventDefault()
+    const content = event.target.anecdoteText.value
+    dispatch({
+      type: 'ADD_ANECDOTE',
+      data: { text: content }
+    })
+    event.target.anecdoteText.value = ''
+  }
+
+  return (
+    <div>
+      <h2>create new</h2>
+      <form onSubmit={addAnecdote}>
+        <div><input name='anecdoteText' /></div>
+        <button type='submit'>create</button>
+      </form>
+    </div>
+  )
+}
+
+const App = () => {
+  return (
+    <div>
+      <AnecdoteList />
       <AnecdoteForm />
     </div>
   )

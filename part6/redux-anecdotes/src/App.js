@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Notification from './components/Notification'
-import { initializeAnecdotes, addAnecdote } from './reducers/anecdoteReducer'
+import { addAnecdote, initializeAnecdotes, voteAnecdote } from './reducers/anecdoteReducer'
 
 const FilterForm = () => {
   const filter = useSelector(state => state.filter)
@@ -33,10 +33,7 @@ const AnecdoteList = () => {
   const vote = (id) => {
     console.log('vote', id)
 
-    dispatch({
-      type: 'INCREMENT_VOTES',
-      data: { id }
-    })
+    dispatch(voteAnecdote(id))
 
     dispatch({
       type: 'NOTIFY',

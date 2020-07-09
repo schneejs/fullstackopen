@@ -12,4 +12,9 @@ const postAnecdote = async (anecdote) => {
     return result.data
 }
 
-export default { getAll, postAnecdote }
+const patchAnecdote = async (id, anecdote) => {
+    const result = await axios.patch(baseUrl + '/' + id, anecdote)
+    return result.data
+}
+
+export default { getAll, postAnecdote, patchAnecdote }

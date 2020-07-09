@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Notification from './components/Notification'
 import anecdoteService from './services/anecdotes'
+import { initializeAnecdotes } from './reducers/anecdoteReducer'
 
 const FilterForm = () => {
   const filter = useSelector(state => state.filter)
@@ -106,6 +107,11 @@ const AnecdoteForm = () => {
 }
 
 const App = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(initializeAnecdotes())
+  }, [dispatch])
+
   return (
     <div>
       <Notification />

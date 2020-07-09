@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Notification from './components/Notification'
 import { addAnecdote, initializeAnecdotes, voteAnecdote } from './reducers/anecdoteReducer'
+import { notify } from './reducers/notificationReducer'
 
 const FilterForm = () => {
   const filter = useSelector(state => state.filter)
@@ -32,22 +33,8 @@ const AnecdoteList = () => {
 
   const vote = (id) => {
     console.log('vote', id)
-
     dispatch(voteAnecdote(id))
-
-    dispatch({
-      type: 'NOTIFY',
-      data: {
-        message: 'You have voted successfully',
-        is_successful: true
-      }
-    })
-
-    setTimeout(() => {
-      dispatch({
-        type: 'RESET_NOTIFICATION'
-      })
-    }, 5000)
+    dispatch(notify('You have voted successfully', true, 5))
   }
 
   const processedAnecdotes = anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Notification from './components/Notification'
-import anecdoteService from './services/anecdotes'
-import { initializeAnecdotes } from './reducers/anecdoteReducer'
+import { initializeAnecdotes, addAnecdote } from './reducers/anecdoteReducer'
 
 const FilterForm = () => {
   const filter = useSelector(state => state.filter)
@@ -81,24 +80,16 @@ const AnecdoteList = () => {
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
 
-  const addAnecdote = async event => {
+  const handleAnecdote = event => {
     event.preventDefault()
-    const content = event.target.anecdoteText.value
+    dispatch(addAnecdote(event.target.anecdoteText.value))
     event.target.anecdoteText.value = ''
-    const anecdote = await anecdoteService.postAnecdote({
-      content,
-      votes: 0
-    })
-    dispatch({
-      type: 'ADD_ANECDOTE',
-      data: anecdote
-    })
   }
 
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={addAnecdote}>
+      <form onSubmit={handleAnecdote}>
         <div><input name='anecdoteText' /></div>
         <button type='submit'>create</button>
       </form>

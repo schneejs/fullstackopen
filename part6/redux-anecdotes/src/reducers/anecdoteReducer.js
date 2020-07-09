@@ -28,4 +28,15 @@ export const initializeAnecdotes = () => async dispatch => {
   })
 }
 
+export const addAnecdote = (content) => async dispatch => {
+  const anecdote = await anecdoteService.postAnecdote({
+    content,
+    votes: 0
+  })
+  dispatch({
+    type: 'ADD_ANECDOTE',
+    data: anecdote
+  })
+}
+
 export default reducer

@@ -10,7 +10,7 @@ const reducer = (state = [], action) => {
   case 'INIT_ANECDOTES':
     return action.data
   case 'INCREMENT_VOTES':
-    newState.filter(anecdote => anecdote.id === action.data.id)[0].votes++
+    newState.find(anecdote => anecdote.id === action.data.id).votes++
     return newState
   case 'ADD_ANECDOTE':
     newState.push(action.data)
@@ -44,7 +44,7 @@ export const addAnecdote = content => async dispatch => {
 
 export const voteAnecdote = id => async dispatch => {
   const anecdotes = await anecdoteService.getAll()
-  const votes = anecdotes.filter(anecdote => anecdote.id === id)[0].votes + 1
+  const votes = anecdotes.find(anecdote => anecdote.id === id).votes + 1
   const anecdote = await anecdoteService.patchAnecdote(id, { votes })
   dispatch({
     type: 'UPD_ANECDOTE',

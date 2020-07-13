@@ -137,11 +137,6 @@ describe("post methods work", () => {
             .set("Authorization", "Bearer " + token);
         expect(response2.status).toEqual(200);
         const response3 = await api.get("/api/blogs");
-        expect(response3.body).toHaveLength(initialBlogs.length);
+        expect(response3.body).toHaveLength(initialBlogs.length - 1);
     })
-
-    // test("print blogs", async () => {
-    //     const response = await api.get("/api/blogs");
-    //     console.log(response.body)
-    // })
 });

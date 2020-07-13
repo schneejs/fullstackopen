@@ -1,11 +1,16 @@
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeBlogs } from '../reducers/blogs'
 import blogService from '../services/blogs'
 import deleteBlog from '../services/deleteBlog'
 import likeBlog from '../services/likeBlog'
 import Togglable from './Togglable'
 
-const Blog = ({ blog, user, setBlogs, likeCallback }) => {
+const Blog = ({ blog, likeCallback }) => {
+  const dispatch = useDispatch()
+  const user = useSelector(store => store.user)
+
   const blogStyle = {
     paddingLeft: 3,
     border: "solid",
@@ -18,10 +23,12 @@ const Blog = ({ blog, user, setBlogs, likeCallback }) => {
   const toggle = () => setIsOpen(!isOpen)
 
   const like = () => {
-    likeBlog(user, blog)
-    setLiked(true)
-    if (likeCallback)
-      likeCallback()
+    if (!liked) {
+      likeBlog(user, blog)
+      setLiked(true)
+      if (likeCallback)
+        likeCallback()
+    }
   }
 
   const delete_ = async () => {
@@ -29,7 +36,7 @@ const Blog = ({ blog, user, setBlogs, likeCallback }) => {
       return
     await deleteBlog(user, blog)
     const blogs = await blogService.getAll()
-    setBlogs(blogs)
+    dispatch(initializeBlogs(blogs))
   }
 
   return (
@@ -53,9 +60,6 @@ const Blog = ({ blog, user, setBlogs, likeCallback }) => {
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object,
-  user: PropTypes.object.isRequired,
-  setBlogs: PropTypes.func.isRequired,
   likeCallback: PropTypes.func
 }
 

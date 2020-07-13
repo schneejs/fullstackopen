@@ -1,44 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Home from './components/Home'
 import Login from './components/Login'
 import Panel from './components/Panel'
-import { setLoading } from './reducers/loading'
+import { initializeBlogs } from './reducers/blogs'
 import { setPage } from './reducers/page'
+import { initializeUser } from './reducers/user'
 import blogService from './services/blogs'
 
 const App = () => {
   const page = useSelector(store => store.page)
-  const isLoading = useSelector(store => store.loading)
+  // const isLoading = useSelector(store => store.loading)
+  // const user = useSelector(store => store.user)
   const dispatch = useDispatch()
-
-  const [user, setUser] = useState(null);
-  const [blogs, setBlogs] = useState([])
-
-  const isAuthorized = user !== null;
-
-  const logOut = () => {
-    setUser(null)
-    window.localStorage.removeItem("user")
-    dispatch(setLoading(false))
-  }
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
-      blogs.sort((first_blog, second_blog) => {
-        if (first_blog.likes > second_blog.likes)
-          return -1
-        else if (first_blog.likes < second_blog.likes)
-          return 1
-        else
-          return 0
-      })
-      setBlogs(blogs)
+      dispatch(initializeBlogs(blogs))
     })
 
     const savedUserRaw = window.localStorage.getItem("user")
     if (savedUserRaw) {
-      setUser(JSON.parse(savedUserRaw))
+      dispatch(initializeUser(JSON.parse(savedUserRaw)))
     } else {
       // Switch to login form if not authorized
       dispatch(setPage("login"))
@@ -48,17 +31,10 @@ const App = () => {
   let pageContent;
   switch (page) {
   case "home":
-    pageContent = <Home
-      isAuthorized={isAuthorized}
-      user={user}
-      blogs={blogs}
-      setBlogs={setBlogs}
-    />
+    pageContent = <Home />
     break
   case "login":
-    pageContent = <Login
-      setUser={setUser}
-    />
+    pageContent = <Login />
     break
   default:
     dispatch(setPage("home"))
@@ -67,15 +43,7 @@ const App = () => {
 
   return (
     <div>
-      <Panel
-        createPanelButtonHandler={pageName => event => {
-          event.preventDefault()
-          dispatch(setPage(pageName))
-        }}
-        isAuthorized={isAuthorized}
-        logOut={logOut}
-        isLoading={isLoading}
-      />
+      <Panel />
       {pageContent}
     </div>
   )

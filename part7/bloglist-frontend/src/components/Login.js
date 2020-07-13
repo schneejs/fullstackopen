@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { setLoading } from '../reducers/loading'
 import { notify } from '../reducers/notification'
 import { setPage } from '../reducers/page'
+import { initializeUser } from '../reducers/user'
 import performLogin from '../services/login'
 import { useTextField } from './useField'
 
-const Login = props => {
+const Login = () => {
     const dispatch = useDispatch()
     const [username, , onUsernameChange] = useTextField('')
     const [password, , onPasswordChange] = useTextField('')
@@ -23,7 +23,7 @@ const Login = props => {
 
         performLogin(username, password)
             .then(response => {
-                props.setUser(response.data)
+                dispatch(initializeUser(response.data))
                 dispatch(setPage("home"))
                 // Save the user's object
                 window.localStorage.setItem("user", JSON.stringify(response.data))
@@ -54,12 +54,6 @@ const Login = props => {
             <button className="loginbutton" onClick={handleLoginButton}>Log in</button>
         </div>
     )
-}
-
-Login.propTypes = {
-    setIsLoading: PropTypes.func.isRequired,
-    notify: PropTypes.func.isRequired,
-    setUser: PropTypes.func.isRequired,
 }
 
 export default Login

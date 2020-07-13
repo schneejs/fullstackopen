@@ -1,19 +1,35 @@
-import PropTypes from 'prop-types'
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading } from '../reducers/loading'
+import { setPage } from '../reducers/page'
+import { resetUser } from '../reducers/user'
 
-const Panel = props => {
-    // const dispatch = useDispatch()
+const Panel = () => {
+    const dispatch = useDispatch()
     const isLoading = useSelector(store => store.loading)
     const notification = useSelector(store => store.notification)
+    const user = useSelector(store => store.user)
+
+    const isAuthorized = user !== null
+
+    const logOut = () => {
+        dispatch(resetUser())
+        window.localStorage.removeItem("user")
+        dispatch(setLoading(false))
+    }
+
+    const createPanelButtonHandler = pageName => event => {
+        event.preventDefault()
+        dispatch(setPage(pageName))
+    }
 
     return (
         <div>
-            <button onClick={props.createPanelButtonHandler("home")}>Home</button>
+            <button onClick={createPanelButtonHandler("home")}>Home</button>
             {
-            props.isAuthorized
-                ? <button onClick={props.logOut}>Log out</button>
-                : <button onClick={props.createPanelButtonHandler("login")}>Log in</button>
+            isAuthorized
+                ? <button onClick={logOut}>Log out</button>
+                : <button onClick={createPanelButtonHandler("login")}>Log in</button>
             }
             {isLoading ? <span>Loading...</span> : null}
             {
@@ -23,12 +39,6 @@ const Panel = props => {
             }
         </div>
     )
-}
-
-Panel.propTypes = {
-    isAuthorized: PropTypes.bool.isRequired,
-    createPanelButtonHandler: PropTypes.func.isRequired,
-    logOut: PropTypes.func.isRequired,
 }
 
 export default Panel

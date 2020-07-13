@@ -1,35 +1,38 @@
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from '../components/Blog'
 import Togglable from '../components/Togglable'
+import { initializeBlogs } from '../reducers/blogs'
 import { notify } from '../reducers/notification'
 import blogService from '../services/blogs'
 import createBlog from '../services/createBlog'
+import { useTextField } from './useField'
 
 const CreateBlogForm = props => {
     const dispatch = useDispatch()
+    const user = useSelector(store => store.user)
 
-    const [title, setTitle] = useState("")
-    const [author, setAuthor] = useState("")
-    const [url, setUrl] = useState("")
+    const [title, setTitle, onTitleChange] = useTextField('')
+    const [author, setAuthor, onAuthorChange] = useTextField('')
+    const [url, setUrl, onUrlChange] = useTextField('')
 
     const [isCreateBlogOpen, setIsCreateBlogOpen] = useState(false)
     const toggleIsCreateBlogOpen = () => setIsCreateBlogOpen(!isCreateBlogOpen)
 
     const handleCreateBlogButton = event => {
         event.preventDefault()
-        createBlog(props.user, title, author, url)
+        createBlog(user, title, author, url)
             .then(response => {
                 if (response.status !== 201)
                     dispatch(notify(false, "Error while uploading the blog"))
-                setTitle("")
-                setAuthor("")
-                setUrl("")
+                setTitle('')
+                setAuthor('')
+                setUrl('')
                 setIsCreateBlogOpen(false)
 
                 blogService.getAll().then(blogs =>
-                    props.setBlogs(blogs)
+                    dispatch(initializeBlogs(blogs))
                 )
 
                 dispatch(notify(true, "Blog successfully added"))
@@ -43,17 +46,17 @@ const CreateBlogForm = props => {
             <h2>create</h2>
             <label>
                 title:
-                <input className="titleinput" value={title} onChange={event => setTitle(event.target.value)}></input>
+                <input className="titleinput" value={title} onChange={onTitleChange}></input>
             </label>
             <br />
             <label>
                 author:
-                <input className="authorinput" value={author} onChange={event => setAuthor(event.target.value)}></input>
+                <input className="authorinput" value={author} onChange={onAuthorChange}></input>
             </label>
             <br />
             <label>
                 url:
-                <input className="urlinput" value={url} onChange={event => setUrl(event.target.value)}></input>
+                <input className="urlinput" value={url} onChange={onUrlChange}></input>
             </label>
             <br />
             <button className="createblog" onClick={handleCreateBlogButton}>Create blog</button>
@@ -63,40 +66,31 @@ const CreateBlogForm = props => {
 }
 
 CreateBlogForm.propTypes = {
-    user: PropTypes.object,
-    notify: PropTypes.func.isRequired,
-    setBlogs: PropTypes.func.isRequired,
     createBlogCallback: PropTypes.func
 }
 
-const Home = props => (
-    <div>
-        <h2>blogs</h2>
-        {
-        props.isAuthorized
-            ? <p>Your nickname is {props.user.username}</p>
-            : null
-        }
-        <div id="blogs">
-            {props.blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} user={props.user} setBlogs={props.setBlogs} />
-            )}
-        </div>
-        <CreateBlogForm
-            user={props.user}
-            setBlogs={props.setBlogs}
-            createBlogCallback={props.createBlogCallback}
-        />
-    </div>
-)
+const Home = () => {
+    const user = useSelector(store => store.user)
+    const blogs = useSelector(store => store.blogs)
 
-Home.propTypes = {
-    isAuthorized: PropTypes.bool.isRequired,
-    blogs: PropTypes.array.isRequired,
-    user: PropTypes.object,
-    notify: PropTypes.func.isRequired,
-    setBlogs: PropTypes.func.isRequired,
-    createBlogCallback: PropTypes.func
+    const isAuthorized = user !== null
+
+    return (
+        <div>
+            <h2>blogs</h2>
+            {
+            isAuthorized
+                ? <p>Your nickname is {user.username}</p>
+                : null
+            }
+            <div id="blogs">
+                {blogs.map(blog =>
+                <Blog key={blog.id} blog={blog} />
+                )}
+            </div>
+            <CreateBlogForm />
+        </div>
+    )
 }
 
 export default Home

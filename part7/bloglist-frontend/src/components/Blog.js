@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import Togglable from './Togglable'
-import likeBlog from '../services/likeBlog'
-import deleteBlog from '../services/deleteBlog'
+import React, { useState } from 'react'
 import blogService from '../services/blogs'
+import deleteBlog from '../services/deleteBlog'
+import likeBlog from '../services/likeBlog'
+import Togglable from './Togglable'
 
 const Blog = ({ blog, user, setBlogs, likeCallback }) => {
   const blogStyle = {

@@ -10,8 +10,6 @@ const App = () => {
   const page = useSelector(store => store.page)
   const dispatch = useDispatch()
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState(null);
@@ -20,8 +18,6 @@ const App = () => {
   const isAuthorized = user !== null;
 
   const logOut = () => {
-    setUsername("")
-    setPassword("")
     setUser(null)
     window.localStorage.removeItem("user")
     setIsLoading(false)
@@ -67,10 +63,6 @@ const App = () => {
     break
   case "login":
     pageContent = <Login
-      username={username}
-      setUsername={setUsername}
-      password={password}
-      setPassword={setPassword}
       setIsLoading={setIsLoading}
       setUser={setUser}
       notify={notify}

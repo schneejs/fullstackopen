@@ -3,20 +3,23 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { setPage } from '../reducers/page'
 import performLogin from '../services/login'
+import { useTextField } from './useField'
 
 const Login = props => {
     const dispatch = useDispatch()
+    const [username, , onUsernameChange] = useTextField('')
+    const [password, , onPasswordChange] = useTextField('')
 
     const handleLoginButton = () => {
         props.setIsLoading(true)
 
-        if (!(props.username && props.password)) {
+        if (!(username && password)) {
             props.notify(false, "Both username and password are required")
             props.setIsLoading(false)
             return
         }
 
-        performLogin(props.username, props.password)
+        performLogin(username, password)
             .then(response => {
                 props.setUser(response.data)
                 dispatch(setPage("home"))
@@ -39,12 +42,12 @@ const Login = props => {
         <div>
             <label>
                 Username
-                <input className="username" value={props.username} onChange={event => props.setUsername(event.target.value)}></input>
+                <input className="username" value={username} onChange={onUsernameChange}></input>
             </label>
             <br />
             <label>
                 Password
-                <input className="password" type="password" value={props.password} onChange={event => props.setPassword(event.target.value)}></input>
+                <input className="password" type="password" value={password} onChange={onPasswordChange}></input>
             </label>
             <button className="loginbutton" onClick={handleLoginButton}>Log in</button>
         </div>
@@ -52,10 +55,6 @@ const Login = props => {
 }
 
 Login.propTypes = {
-    username: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
-    setUsername: PropTypes.func.isRequired,
-    setPassword: PropTypes.func.isRequired,
     setIsLoading: PropTypes.func.isRequired,
     notify: PropTypes.func.isRequired,
     setUser: PropTypes.func.isRequired,

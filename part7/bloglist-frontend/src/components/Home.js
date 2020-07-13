@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from '../components/Blog'
 import Togglable from '../components/Togglable'
-import createBlog from '../services/createBlog'
+import { notify } from '../reducers/notification'
 import blogService from '../services/blogs'
+import createBlog from '../services/createBlog'
 
 const CreateBlogForm = props => {
+    const dispatch = useDispatch()
+
     const [title, setTitle] = useState("")
     const [author, setAuthor] = useState("")
     const [url, setUrl] = useState("")
@@ -18,7 +22,7 @@ const CreateBlogForm = props => {
         createBlog(props.user, title, author, url)
             .then(response => {
                 if (response.status !== 201)
-                    props.notify(false, "Error while uploading the blog")
+                    dispatch(notify(false, "Error while uploading the blog"))
                 setTitle("")
                 setAuthor("")
                 setUrl("")
@@ -28,7 +32,7 @@ const CreateBlogForm = props => {
                     props.setBlogs(blogs)
                 )
 
-                props.notify(true, "Blog successfully added")
+                dispatch(notify(true, "Blog successfully added"))
             })
         if (props.createBlogCallback)
             props.createBlogCallback(title, author, url)
@@ -80,7 +84,6 @@ const Home = props => (
         </div>
         <CreateBlogForm
             user={props.user}
-            notify={props.notify}
             setBlogs={props.setBlogs}
             createBlogCallback={props.createBlogCallback}
         />

@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import Home from './components/Home'
 import Login from './components/Login'
 import Panel from './components/Panel'
+import { setLoading } from './reducers/loading'
 import { setPage } from './reducers/page'
 import blogService from './services/blogs'
 
 const App = () => {
   const page = useSelector(store => store.page)
+  const isLoading = useSelector(store => store.loading)
   const dispatch = useDispatch()
 
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [notification, setNotification] = useState(null);
   const [blogs, setBlogs] = useState([])
 
   const isAuthorized = user !== null;
@@ -20,12 +20,7 @@ const App = () => {
   const logOut = () => {
     setUser(null)
     window.localStorage.removeItem("user")
-    setIsLoading(false)
-  }
-
-  const notify = (isSuccessful, message) => {
-    setNotification({isSuccessful, message})
-    setTimeout(() => setNotification(null), 3500)
+    dispatch(setLoading(false))
   }
 
   useEffect(() => {
@@ -58,14 +53,11 @@ const App = () => {
       user={user}
       blogs={blogs}
       setBlogs={setBlogs}
-      notify={notify}
     />
     break
   case "login":
     pageContent = <Login
-      setIsLoading={setIsLoading}
       setUser={setUser}
-      notify={notify}
     />
     break
   default:
@@ -83,7 +75,6 @@ const App = () => {
         isAuthorized={isAuthorized}
         logOut={logOut}
         isLoading={isLoading}
-        notification={notification}
       />
       {pageContent}
     </div>

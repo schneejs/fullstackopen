@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { setLoading } from '../reducers/loading'
+import { notify } from '../reducers/notification'
 import { setPage } from '../reducers/page'
 import performLogin from '../services/login'
 import { useTextField } from './useField'
@@ -11,11 +13,11 @@ const Login = props => {
     const [password, , onPasswordChange] = useTextField('')
 
     const handleLoginButton = () => {
-        props.setIsLoading(true)
+        dispatch(setLoading(true))
 
         if (!(username && password)) {
-            props.notify(false, "Both username and password are required")
-            props.setIsLoading(false)
+            dispatch(notify(false, "Both username and password are required"))
+            dispatch(setLoading(false))
             return
         }
 
@@ -25,16 +27,16 @@ const Login = props => {
                 dispatch(setPage("home"))
                 // Save the user's object
                 window.localStorage.setItem("user", JSON.stringify(response.data))
-                props.notify(true, "Successfully logged in")
-                props.setIsLoading(false)
+                dispatch(notify(true, "Successfully logged in"))
+                dispatch(setLoading(false))
             })
             .catch(error => {
                 if (error.response.status === 401) {
-                    props.notify(false, "Incorrect username or password")
+                    dispatch(notify(false, "Incorrect username or password"))
                 } else {
-                    props.notify(false, "Unknown error")
+                    dispatch(notify(false, "Unknown error"))
                 }
-                props.setIsLoading(false)
+                dispatch(setLoading(false))
             })
     }
 

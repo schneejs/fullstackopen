@@ -138,10 +138,8 @@ describe('Working with blogs', () => {
 
         const names = [ 'Blog B', 'Blog A' ]
 
-        cy.get('#blogs > div.blog').should($divs => {
-            expect($divs).to.have.length(names.length)
-            expect($divs.eq(0)).to.contain(names[0])
-            expect($divs.eq(1)).to.contain(names[1])
-        })
+        cy.get('div.blog').should('have.length', names.length)
+        cy.get('div.blog').eq(0).should('contain', names[0])
+        cy.get('div.blog').eq(1).should('contain', names[1])
     })
 })

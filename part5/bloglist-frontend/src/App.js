@@ -31,10 +31,12 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs => {
       blogs.sort((first_blog, second_blog) => {
-        if (first_blog.likes === second_blog.likes)
-          return 0
+        if (first_blog.likes > second_blog.likes)
+          return -1
+        else if (first_blog.likes < second_blog.likes)
+          return 1
         else
-          return first_blog.likes < second_blog.likes
+          return 0
       })
       setBlogs(blogs)
     })

@@ -10,8 +10,6 @@ import blogService from './services/blogs'
 
 const App = () => {
   const page = useSelector(store => store.page)
-  // const isLoading = useSelector(store => store.loading)
-  // const user = useSelector(store => store.user)
   const dispatch = useDispatch()
 
   useEffect(() => {

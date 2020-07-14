@@ -26,6 +26,7 @@ const Panel = () => {
     return (
         <div>
             <button onClick={createPanelButtonHandler("home")}>Home</button>
+            <button onClick={createPanelButtonHandler("users")}>Users</button>
             {
             isAuthorized
                 ? <button onClick={logOut}>Log out</button>

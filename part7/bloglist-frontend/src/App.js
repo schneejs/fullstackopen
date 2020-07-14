@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Home from './components/Home'
 import Login from './components/Login'
 import Panel from './components/Panel'
+import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogs'
 import { setPage } from './reducers/page'
 import { initializeUser } from './reducers/user'
@@ -33,6 +34,9 @@ const App = () => {
     break
   case "login":
     pageContent = <Login />
+    break
+  case "users":
+    pageContent = <Users />
     break
   default:
     dispatch(setPage("home"))

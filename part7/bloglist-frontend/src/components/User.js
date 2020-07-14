@@ -22,7 +22,6 @@ export default () => {
         )
 
     const blogsOfUser = blogs.filter(blog => blog.user !== null && blog.user.id === id)
-    console.log({user})
     return (
         <div>
             <h3>{user.username}</h3>

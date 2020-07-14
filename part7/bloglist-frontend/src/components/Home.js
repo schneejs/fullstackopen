@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Blog from '../components/Blog'
+import { Link } from 'react-router-dom'
 import Togglable from '../components/Togglable'
 import { initializeBlogs } from '../reducers/blogs'
 import { notify } from '../reducers/notification'
@@ -75,6 +75,13 @@ const Home = () => {
 
     const isAuthorized = user !== null
 
+    const blogStyle = {
+        paddingLeft: 3,
+        border: "solid",
+        borderWidth: 1,
+        marginBottom: 5
+    }
+
     return (
         <div>
             <h2>blogs</h2>
@@ -84,9 +91,11 @@ const Home = () => {
                 : null
             }
             <div id="blogs">
-                {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} />
-                )}
+                {
+                    blogs.map(blog => (
+                        <p><Link key={blog.id} style={blogStyle} to={`/blogs/${blog.id}`}>{blog.title}</Link></p>
+                    ))
+                }
             </div>
             <CreateBlogForm />
         </div>

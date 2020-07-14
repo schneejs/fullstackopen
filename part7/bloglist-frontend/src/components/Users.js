@@ -19,7 +19,7 @@ const Users = () => {
         const blogsOfUserAmount = blogsOfUser.length
         return (
             <tr key={user.id}>
-                <td><Link to={`/user/${user.id}`}>{user.username}</Link></td>
+                <td><Link to={`/users/${user.id}`}>{user.username}</Link></td>
                 <td>{blogsOfUserAmount}</td>
             </tr>
         )

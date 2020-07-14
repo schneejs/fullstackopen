@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Route, Switch, withRouter } from 'react-router-dom'
+import Blog from './components/Blog'
 import Home from './components/Home'
 import Login from './components/Login'
 import Panel from './components/Panel'
@@ -39,7 +40,8 @@ const App = withRouter(({history}) => {
       <Switch location={history.location}>
         <Route path='/login' component={Login} />
         <Route path='/users' component={Users} />
-        <Route path='/user/:id' component={User} />
+        <Route path='/users/:id' component={User} />
+        <Route path='/blogs/:id' component={Blog} />
         <Route path='/' component={Home} />
       </Switch>
     </div>

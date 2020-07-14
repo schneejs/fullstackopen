@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
-import { getUsers } from '../services/users'
+import { Link } from 'react-router-dom'
 
 const Users = () => {
     const blogs = useSelector(store => store.blogs)
-    const [users, setUsers] = useState(null)
+    const users = useSelector(store => store.cache.users)
 
-    useEffect(() => {
-        getUsers()
-            .then(data => {
-                setUsers(data)
-            })
-    })
-
-    if (users === null) {
+    if (!users) {
         return (
             <div>
                 <p>Loading...</p>
@@ -26,7 +19,7 @@ const Users = () => {
         const blogsOfUserAmount = blogsOfUser.length
         return (
             <tr key={user.id}>
-                <td>{user.username}</td>
+                <td><Link to={`/user/${user.id}`}>{user.username}</Link></td>
                 <td>{blogsOfUserAmount}</td>
             </tr>
         )

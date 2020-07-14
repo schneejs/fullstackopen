@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import Home from './components/Home'
 import Login from './components/Login'
 import Panel from './components/Panel'
+import User from './components/User'
 import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogs'
-import { setPage } from './reducers/page'
+import { cacheData } from './reducers/cache'
 import { initializeUser } from './reducers/user'
 import blogService from './services/blogs'
+import { getUsers } from './services/users'
 
-const App = () => {
-  const page = useSelector(store => store.page)
+const App = withRouter(({history}) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -18,37 +20,30 @@ const App = () => {
       dispatch(initializeBlogs(blogs))
     })
 
+    getUsers().then(data => {
+      dispatch(cacheData('users', data))
+    })
+
     const savedUserRaw = window.localStorage.getItem("user")
     if (savedUserRaw) {
       dispatch(initializeUser(JSON.parse(savedUserRaw)))
     } else {
       // Switch to login form if not authorized
-      dispatch(setPage("login"))
+      history.replace('/login')
     }
-  }, [dispatch])
-
-  let pageContent;
-  switch (page) {
-  case "home":
-    pageContent = <Home />
-    break
-  case "login":
-    pageContent = <Login />
-    break
-  case "users":
-    pageContent = <Users />
-    break
-  default:
-    dispatch(setPage("home"))
-    break
-  }
+  }, [dispatch, history])
 
   return (
     <div>
       <Panel />
-      {pageContent}
+      <Switch location={history.location}>
+        <Route path='/login' component={Login} />
+        <Route path='/users' component={Users} />
+        <Route path='/user/:id' component={User} />
+        <Route path='/' component={Home} />
+      </Switch>
     </div>
   )
-}
+})
 
 export default App

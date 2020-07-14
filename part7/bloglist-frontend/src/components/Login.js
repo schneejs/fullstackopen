@@ -1,13 +1,13 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { setLoading } from '../reducers/loading'
 import { notify } from '../reducers/notification'
-import { setPage } from '../reducers/page'
 import { initializeUser } from '../reducers/user'
 import performLogin from '../services/login'
 import { useTextField } from './useField'
 
-const Login = () => {
+const Login = withRouter(({history}) => {
     const dispatch = useDispatch()
     const [username, , onUsernameChange] = useTextField('')
     const [password, , onPasswordChange] = useTextField('')
@@ -24,11 +24,11 @@ const Login = () => {
         performLogin(username, password)
             .then(response => {
                 dispatch(initializeUser(response.data))
-                dispatch(setPage("home"))
-                // Save the user's object
-                window.localStorage.setItem("user", JSON.stringify(response.data))
                 dispatch(notify(true, "Successfully logged in"))
                 dispatch(setLoading(false))
+                // Save the user's object
+                window.localStorage.setItem("user", JSON.stringify(response.data))
+                history.push('/')
             })
             .catch(error => {
                 if (error.response.status === 401) {
@@ -54,6 +54,6 @@ const Login = () => {
             <button className="loginbutton" onClick={handleLoginButton}>Log in</button>
         </div>
     )
-}
+})
 
 export default Login

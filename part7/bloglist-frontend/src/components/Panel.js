@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { setLoading } from '../reducers/loading'
-import { setPage } from '../reducers/page'
 import { resetUser } from '../reducers/user'
 
 const Panel = () => {
@@ -18,19 +18,14 @@ const Panel = () => {
         dispatch(setLoading(false))
     }
 
-    const createPanelButtonHandler = pageName => event => {
-        event.preventDefault()
-        dispatch(setPage(pageName))
-    }
-
     return (
         <div>
-            <button onClick={createPanelButtonHandler("home")}>Home</button>
-            <button onClick={createPanelButtonHandler("users")}>Users</button>
+            <Link to='/'>Home</Link>
+            <Link to='/users'>Users</Link>
             {
             isAuthorized
                 ? <button onClick={logOut}>Log out</button>
-                : <button onClick={createPanelButtonHandler("login")}>Log in</button>
+                : <Link to='/login'>Log in</Link>
             }
             {isLoading ? <span>Loading...</span> : null}
             {

@@ -6,7 +6,6 @@ import { initializeBlogs } from '../reducers/blogs'
 import blogService from '../services/blogs'
 import deleteBlog from '../services/deleteBlog'
 import likeBlog from '../services/likeBlog'
-import Togglable from './Togglable'
 
 const Blog = () => {
   const dispatch = useDispatch()

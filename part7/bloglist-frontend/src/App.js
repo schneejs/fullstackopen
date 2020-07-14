@@ -39,8 +39,8 @@ const App = withRouter(({history}) => {
       <Panel />
       <Switch location={history.location}>
         <Route path='/login' component={Login} />
-        <Route path='/users' component={Users} />
         <Route path='/users/:id' component={User} />
+        <Route path='/users' component={Users} />
         <Route path='/blogs/:id' component={Blog} />
         <Route path='/' component={Home} />
       </Switch>

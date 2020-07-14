@@ -93,7 +93,7 @@ const Home = () => {
             <div id="blogs">
                 {
                     blogs.map(blog => (
-                        <p><Link key={blog.id} style={blogStyle} to={`/blogs/${blog.id}`}>{blog.title}</Link></p>
+                        <p key={blog.id}><Link style={blogStyle} to={`/blogs/${blog.id}`}>{blog.title}</Link></p>
                     ))
                 }
             </div>

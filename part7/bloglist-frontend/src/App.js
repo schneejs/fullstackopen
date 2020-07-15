@@ -4,6 +4,7 @@ import { Route, Switch, withRouter } from 'react-router-dom'
 import Blog from './components/Blog'
 import Home from './components/Home'
 import Login from './components/Login'
+import Notification from './components/Notification'
 import Panel from './components/Panel'
 import User from './components/User'
 import Users from './components/Users'
@@ -35,8 +36,9 @@ const App = withRouter(({history}) => {
   }, [dispatch, history])
 
   return (
-    <div>
+    <div className='container'>
       <Panel />
+      <Notification />
       <Switch location={history.location}>
         <Route path='/login' component={Login} />
         <Route path='/users/:id' component={User} />

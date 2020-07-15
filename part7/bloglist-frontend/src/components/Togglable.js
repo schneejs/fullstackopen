@@ -1,12 +1,13 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
+import { Button } from 'reactstrap'
 
 const Togglable = props => (
     <div>
         {
             props.isOpen
                 ? props.children
-                : <button type="button" onClick={props.toggle}>{props.name}</button>
+                : <Button type="button" onClick={props.toggle}>{props.name}</Button>
         }
     </div>
 )

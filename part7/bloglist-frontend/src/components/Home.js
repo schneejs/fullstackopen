@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Button, Card, CardBody, CardSubtitle, CardTitle, Form, FormGroup, Input, Label } from 'reactstrap'
 import Togglable from '../components/Togglable'
 import { initializeBlogs } from '../reducers/blogs'
 import { notify } from '../reducers/notification'
@@ -43,24 +44,23 @@ const CreateBlogForm = props => {
 
     return (
         <Togglable name="Create blog" isOpen={isCreateBlogOpen} toggle={toggleIsCreateBlogOpen}>
-            <h2>create</h2>
-            <label>
-                title:
-                <input className="titleinput" value={title} onChange={onTitleChange}></input>
-            </label>
-            <br />
-            <label>
-                author:
-                <input className="authorinput" value={author} onChange={onAuthorChange}></input>
-            </label>
-            <br />
-            <label>
-                url:
-                <input className="urlinput" value={url} onChange={onUrlChange}></input>
-            </label>
-            <br />
-            <button className="createblog" onClick={handleCreateBlogButton}>Create blog</button>
-            <button className="createblogcancel" onClick={() => setIsCreateBlogOpen(false)}>Cancel</button>
+            <h3>Create a blog</h3>
+            <Form>
+                <FormGroup>
+                    <Label for='title'>Title</Label>
+                    <Input id='title' className="titleinput" value={title} onChange={onTitleChange}></Input>
+                </FormGroup>
+                <FormGroup>
+                    <Label for='author'>Author</Label>
+                    <Input id='author' className="authorinput" value={author} onChange={onAuthorChange}></Input>
+                </FormGroup>
+                <FormGroup>
+                    <Label for='url'>URL</Label>
+                    <Input id='url' className="urlinput" value={url} onChange={onUrlChange}></Input>
+                </FormGroup>
+                <Button className="createblog" onClick={handleCreateBlogButton}>Create blog</Button>{' '}
+                <Button className="createblogcancel" onClick={() => setIsCreateBlogOpen(false)}>Cancel</Button>
+            </Form>
         </Togglable>
     )
 }
@@ -70,30 +70,20 @@ CreateBlogForm.propTypes = {
 }
 
 const Home = () => {
-    const user = useSelector(store => store.user)
     const blogs = useSelector(store => store.blogs)
-
-    const isAuthorized = user !== null
-
-    const blogStyle = {
-        paddingLeft: 3,
-        border: "solid",
-        borderWidth: 1,
-        marginBottom: 5
-    }
 
     return (
         <div>
             <h2>blogs</h2>
-            {
-            isAuthorized
-                ? <p>Your nickname is {user.username}</p>
-                : null
-            }
             <div id="blogs">
                 {
                     blogs.map(blog => (
-                        <p key={blog.id}><Link style={blogStyle} to={`/blogs/${blog.id}`}>{blog.title}</Link></p>
+                        <Card key={blog.id}>
+                            <CardBody>
+                                <CardTitle tag={Link} to={`/blogs/${blog.id}`}>{blog.title}</CardTitle>
+                                <CardSubtitle>Author: {blog.author}</CardSubtitle>
+                            </CardBody>
+                        </Card>
                     ))
                 }
             </div>

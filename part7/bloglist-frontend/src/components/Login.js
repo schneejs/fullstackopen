@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { Button, Form, FormGroup, Input, Label } from 'reactstrap'
 import { setLoading } from '../reducers/loading'
 import { notify } from '../reducers/notification'
 import { initializeUser } from '../reducers/user'
@@ -42,16 +43,17 @@ const Login = withRouter(({history}) => {
 
     return (
         <div>
-            <label>
-                Username
-                <input className="username" value={username} onChange={onUsernameChange}></input>
-            </label>
-            <br />
-            <label>
-                Password
-                <input className="password" type="password" value={password} onChange={onPasswordChange}></input>
-            </label>
-            <button className="loginbutton" onClick={handleLoginButton}>Log in</button>
+            <Form>
+                <FormGroup>
+                    <Label for='username'>Username</Label>
+                    <Input id='username' className="username" value={username} onChange={onUsernameChange} />
+                </FormGroup>
+                <FormGroup>
+                    <Label for='password'>Password</Label>
+                    <Input id='password' className="password" type="password" value={password} onChange={onPasswordChange} />
+                </FormGroup>
+                <Button className="loginbutton" onClick={handleLoginButton}>Log in</Button>
+            </Form>
         </div>
     )
 })

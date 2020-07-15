@@ -14,11 +14,16 @@ const reducer = (state = null, action) => {
     }
 }
 
-export const notify = (isSuccessful, message) => async dispatch => {
+export const notify = (isSuccessful, message, showTime = 3500) => async dispatch => {
     dispatch({
         type: 'NOTIFY',
         data: { isSuccessful, message }
     })
+    setTimeout(() => {
+        dispatch({
+            type: 'RESET_NOTIFICATION'
+        })
+    }, showTime)
 }
 
 export const resetNotification = () => async dispatch => {

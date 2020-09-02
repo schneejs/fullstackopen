@@ -1,5 +1,5 @@
-import { gql, useQuery } from '@apollo/client'
-import React from 'react'
+import { gql, useMutation, useQuery } from '@apollo/client'
+import React, { createRef } from 'react'
 
 export const ALL_AUTHORS = gql`
 query {
@@ -11,8 +11,27 @@ query {
 }
 `
 
+export const EDIT_AUTHOR = gql`
+mutation editAuthor($name: String!, $setBornTo: Int) {
+  editAuthor(name: $name, setBornTo: $setBornTo) {
+    name
+    bookCount
+    born
+  }
+}
+`
+
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
+  const [editAuthor] = useMutation(EDIT_AUTHOR, {
+    onError: error => {
+      console.log({error})
+    },
+    refetchQueries: [ { query: ALL_AUTHORS } ]
+  })
+
+  const author = createRef()
+  const born = createRef()
 
   if (result.loading)
     return <div>Loading...</div>
@@ -22,6 +41,20 @@ const Authors = (props) => {
   }
   
   const authors = result.data.allAuthors
+
+  const handleSubmit = event => {
+    event.preventDefault()
+
+    if (!(author.current.value && born.current.value))
+      return
+    
+    editAuthor({
+      variables: {
+        name: author.current.value,
+        setBornTo: Number(born.current.value)
+      }
+    })
+  }
 
   return (
     <div>
@@ -46,7 +79,25 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-
+      <br />
+      <form onSubmit={handleSubmit}>
+        <label>
+          Name:
+          <select ref={author}>
+            <option value=''>Please, select an author</option>
+          {
+            authors.map(author => <option key={author.name} value={author.name}>{author.name}</option>)
+          }
+          </select>
+        </label>
+        <br />
+        <label>
+          Birth year:
+          <input ref={born} />
+        </label>
+        <br />
+        <button type='submit'>Submit</button>
+      </form>
     </div>
   )
 }

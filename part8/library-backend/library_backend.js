@@ -1,88 +1,9 @@
 const { ApolloServer, gql } = require('apollo-server')
-const { v1: uuid } = require('uuid')
+const mongoose = require('mongoose')
+const Book = require('./book')
+const Author = require('./author')
 
-let authors = [
-    {
-        name: 'Robert Martin',
-        id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
-        born: 1952,
-    },
-    {
-        name: 'Martin Fowler',
-        id: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
-        born: 1963
-    },
-    {
-        name: 'Fyodor Dostoevsky',
-        id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
-        born: 1821
-    },
-    {
-        name: 'Joshua Kerievsky', // birthyear not known
-        id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
-    },
-    {
-        name: 'Sandi Metz', // birthyear not known
-        id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
-    },
-]
-
-/*
- * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
- * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
-*/
-
-let books = [
-    {
-        title: 'Clean Code',
-        published: 2008,
-        author: 'Robert Martin',
-        id: "afa5b6f4-344d-11e9-a414-719c6709cf3e",
-        genres: ['refactoring']
-    },
-    {
-        title: 'Agile software development',
-        published: 2002,
-        author: 'Robert Martin',
-        id: "afa5b6f5-344d-11e9-a414-719c6709cf3e",
-        genres: ['agile', 'patterns', 'design']
-    },
-    {
-        title: 'Refactoring, edition 2',
-        published: 2018,
-        author: 'Martin Fowler',
-        id: "afa5de00-344d-11e9-a414-719c6709cf3e",
-        genres: ['refactoring']
-    },
-    {
-        title: 'Refactoring to patterns',
-        published: 2008,
-        author: 'Joshua Kerievsky',
-        id: "afa5de01-344d-11e9-a414-719c6709cf3e",
-        genres: ['refactoring', 'patterns']
-    },
-    {
-        title: 'Practical Object-Oriented Design, An Agile Primer Using Ruby',
-        published: 2012,
-        author: 'Sandi Metz',
-        id: "afa5de02-344d-11e9-a414-719c6709cf3e",
-        genres: ['refactoring', 'design']
-    },
-    {
-        title: 'Crime and punishment',
-        published: 1866,
-        author: 'Fyodor Dostoevsky',
-        id: "afa5de03-344d-11e9-a414-719c6709cf3e",
-        genres: ['classic', 'crime']
-    },
-    {
-        title: 'The Demon ',
-        published: 1872,
-        author: 'Fyodor Dostoevsky',
-        id: "afa5de04-344d-11e9-a414-719c6709cf3e",
-        genres: ['classic', 'revolution']
-    },
-]
+const MONGODB_URI = 'mongodb+srv://fullstack:TU68qmUv7sDzr93@cluster0-udxk6.mongodb.net/booklist?retryWrites=true&w=majority'
 
 const typeDefs = gql`
     type Author {
@@ -95,7 +16,7 @@ const typeDefs = gql`
     type Book {
         title: String!
         published: Int!
-        author: String!
+        author: Author!
         id: ID!
         genres: [String!]!
     }
@@ -123,53 +44,65 @@ const typeDefs = gql`
 
 const resolvers = {
     Mutation: {
-        addBook: (_, book) => {
-            const newBook = { ...book, id: uuid() }
-            books.push(newBook)
-
-            if (!authors.find(author => author.name === book.author)) {
-                authors.push({
-                    id: uuid(),
-                    born: null,
-                    name: book.author
-                })
+        addBook: async (_, book) => {
+            let author 
+            try {
+                author = await Author.findOne({ name: book.author })
+            } catch {
+                author = null
             }
-
-            return newBook
+            if (!author)
+                author = await Author.create({ name: book.author })
+            else
+                author = await Author.findOne({ name: book.author })
+            return await Book.create({ ...book, author })
         },
-        editAuthor: (_, { name, setBornTo }) => {
-            const author = authors.find(author => author.name === name)
+        editAuthor: async (_, { name, setBornTo }) => {
+            let author = await Author.findOne({ name })
             if (!author)
                 return null
             if (setBornTo)
-                author.born = setBornTo
-            authors = authors.map(p => p.name === name ? author : p)
+                author = await Author.updateOne({ name }, { born: setBornTo })
             return author
         }
     },
     Query: {
-        bookCount: () => books.length,
-        allBooks: (_, { author, genre }) => {
-            let filteredBooks = [...books]
+        bookCount: async () => await Book.count({}),
+        allBooks: async (_, { author, genre }) => {
+            const filter = {}
             if (author)
-                filteredBooks = filteredBooks.filter(book => book.author === author)
+                filter.author = await Author.findOne({ name: author })
             if (genre)
-                filteredBooks = filteredBooks.filter(book => book.genres.includes(genre))
-            return filteredBooks
+                filter.genres = { $elemMatch: { $eq: genre } }
+            return await Book.find(filter).populate('author')
         },
-        authorCount: () => authors.length,
-        allAuthors: () => authors
+        authorCount: async () => await Author.count({}),
+        allAuthors: async () => await Author.find({})
     },
     Author: {
-        bookCount: root => books.filter(book => book.author === root.name).length || 0
+        bookCount: async root => {
+            const author = await Author.findOne({ name: root.name })
+            return await Book.count({ author })
+        }
     }
 }
 
 const server = new ApolloServer({
     typeDefs,
     resolvers,
+    cors: true
 })
 
-server.listen().then(({ url }) => {
+const main = async () => {
+    process.stdout.write('Connecting to MongoDB Cloud... ')
+    try {
+        await mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+        console.log('Done.')
+    } catch (error) {
+        console.log('Failed: ', error.message)
+    }
+    const { url } = await server.listen()
     console.log(`Server ready at ${url}`)
-})
+}
+
+main()

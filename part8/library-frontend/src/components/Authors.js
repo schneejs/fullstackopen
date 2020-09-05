@@ -25,9 +25,9 @@ const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     onError: error => {
-      console.log({error})
+      console.log({ error })
     },
-    refetchQueries: [ { query: ALL_AUTHORS } ]
+    refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
   const author = createRef()
@@ -39,7 +39,7 @@ const Authors = (props) => {
   if (!props.show) {
     return null
   }
-  
+
   const authors = result.data.allAuthors
 
   const handleSubmit = event => {
@@ -47,7 +47,7 @@ const Authors = (props) => {
 
     if (!(author.current.value && born.current.value))
       return
-    
+
     editAuthor({
       variables: {
         name: author.current.value,
@@ -85,9 +85,9 @@ const Authors = (props) => {
           Name:
           <select ref={author}>
             <option value=''>Please, select an author</option>
-          {
-            authors.map(author => <option key={author.name} value={author.name}>{author.name}</option>)
-          }
+            {
+              authors.map(author => <option key={author.name} value={author.name}>{author.name}</option>)
+            }
           </select>
         </label>
         <br />

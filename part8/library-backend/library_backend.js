@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError, ApolloError } = require('apollo-server')
 const mongoose = require('mongoose')
 const Book = require('./book')
 const Author = require('./author')
@@ -51,18 +51,48 @@ const resolvers = {
             } catch {
                 author = null
             }
-            if (!author)
-                author = await Author.create({ name: book.author })
-            else
-                author = await Author.findOne({ name: book.author })
-            return await Book.create({ ...book, author })
+            // Automatically add authors if they don't exist
+            if (!author) {
+                author = new Author({ name: book.author })
+                try {
+                    author.save()
+                } catch (error) {
+                    if (error.errors['name'])
+                        throw new UserInputError(error.errors['name'].message)
+                    else
+                        throw new ApolloError('Unknown error')
+                }
+            }
+
+            const newBook = new Book({ ...book, author })
+            try {
+                newBook.save()
+            } catch (error) {
+                if (Object.keys(error.errors).length > 0) {
+                    throw new UserInputError('Invalid fields', {
+                        invalidFields: error.errors
+                    })
+                } else {
+                    throw new ApolloError('Unknown error')
+                }
+            }
+            return newBook
         },
         editAuthor: async (_, { name, setBornTo }) => {
-            let author = await Author.findOne({ name })
+            const author = await Author.findOne({ name })
             if (!author)
                 return null
-            if (setBornTo)
-                author = await Author.updateOne({ name }, { born: setBornTo })
+            if (setBornTo) {
+                author.born = setBornTo
+                try {
+                    author.save()
+                } catch (error) {
+                    if (error.errors['born'])
+                        throw new UserInputError(error.errors['born'].message)
+                    else
+                        throw new ApolloError('Unknown error')
+                }
+            }
             return author
         }
     },

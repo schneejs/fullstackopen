@@ -1,4 +1,4 @@
-const { ApolloServer, gql, UserInputError, ApolloError } = require('apollo-server')
+const { ApolloServer, gql, UserInputError, ApolloError, AuthenticationError } = require('apollo-server')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const Book = require('./book')
@@ -65,7 +65,9 @@ const typeDefs = gql`
 
 const resolvers = {
     Mutation: {
-        addBook: async (_, book) => {
+        addBook: async (_, book, { currentUser }) => {
+            if (!currentUser)
+                throw new AuthenticationError('You must be authorized')
             let author
             try {
                 author = await Author.findOne({ name: book.author })
@@ -100,6 +102,8 @@ const resolvers = {
             return newBook
         },
         editAuthor: async (_, { name, setBornTo }) => {
+            if (!currentUser)
+                throw new AuthenticationError('You must be authorized')
             const author = await Author.findOne({ name })
             if (!author)
                 return null

@@ -27,7 +27,7 @@ const Login = (props) => {
             return
         localStorage.setItem('token', result.data.login.value)
         props.setPage('authors')
-    }, [result.data])
+    }, [result.data, props])
 
     if (!props.show)
         return null

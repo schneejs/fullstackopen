@@ -15,16 +15,16 @@ query fetchAllBooks($author: String, $genre: String) {
 `
 
 const Books = (props) => {
-  const [getBooks, result] = useLazyQuery(ALL_BOOKS)
+  const [fetchAllBooks, result] = useLazyQuery(ALL_BOOKS)
   const [books, setBooks] = useState([])
   const [selectedGenre, setSelectedGenre] = useState('')
 
   useEffect(() => {
     if (selectedGenre)
-      getBooks({ variables: { genre: selectedGenre } })
+      fetchAllBooks({ variables: { genre: selectedGenre } })
     else
-      getBooks()
-  }, [selectedGenre, getBooks])
+      fetchAllBooks()
+  }, [selectedGenre, fetchAllBooks])
 
   useEffect(() => {
     if (result.data && books)

@@ -32,7 +32,29 @@ const NewBook = (props) => {
     onError: error => {
       console.log({ error })
     },
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    update: (cache, { data }) => {
+      cache.modify({
+        fields: {
+          allBooks: (existingBooks = []) => {
+            const createdBookRef = cache.writeFragment({
+              data: data.addBook,
+              fragment: gql`
+                fragment NewBook on Book {
+                  title
+                  author {
+                    name
+                  }
+                  published
+                  genres
+                }
+              `
+            })
+            return [...existingBooks, createdBookRef]
+          }
+        }
+      })
+    }
   })
 
   if (!props.show) {

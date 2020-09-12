@@ -12,4 +12,4 @@ const calculateBmi = (height: number, mass: number): string => {
         return "Obese"
 }
 
-console.log(calculateBmi(Number(process.argv[2]), Number(process.argv[3])))
+export default calculateBmi
